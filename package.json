@@ -14,8 +14,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
+<<<<<<< HEAD
   "bugs": {
     "url": "https://github.com/collinsmokaya28/Kito-Health/issues"
+=======
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.5",
+    "express": "^4.17.1",
+    "mongoose": "^6.0.12"
+>>>>>>> 34a485b (Add route to create a new questionnaire and questionnaire model)
   },
   "homepage": "https://github.com/collinsmokaya28/Kito-Health#readme"
 }
