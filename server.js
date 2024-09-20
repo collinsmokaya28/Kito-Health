@@ -1,51 +1,53 @@
 const express = require('express');
+const path = require('path'); // Module to work with file paths
 const app = express();
 const mongoose = require('mongoose');
 const routes = require('./src/routes');
-require('dotenv').config(); // To use environment variables
-const cors = require('cors'); // Middleware for handling CORS
+require('dotenv').config();
+const cors = require('cors');
 
-// Middleware to parse incoming requests
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors()); // Enable CORS for cross-origin requests
+app.use(cors());
 
-// Change the server URL to use an environment variable or fallback to a default MongoDB URL
-const server = process.env.MONGO_URI || 'mongodb://localhost:27017/interviewProject';
+// MongoDB URI
+const server = 'mongodb://localhost:27017/interviewProject';
+mongoose.set('strictQuery', true);
 
-// Routes
 app.use('/', routes);
 
-// Connect to MongoDB
-mongoose
-  .connect(server, {
+mongoose.connect(server, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
-  })
-  .then(() => {
+})
+.then(() => {
     console.log('Database connected');
     const port = process.env.PORT || 3000;
-
-    // Start the server
     app.listen(port, () => {
-      console.log(`API listening on http://localhost:${port}`);
+        console.log(`API listening on http://localhost:${port}`);
     });
-  })
-  .catch((err) => {
+})
+.catch((err) => {
     console.error('Database connection failed:', err);
-  });
+});
 
-// Error handling middleware for unhandled routes
+// Route to serve the questionnaire HTML page
+app.get('/questionnaire', (req, res) => {
+    res.sendFile(path.join(__dirname, 'src/views/questionnaire.html'));
+});
+
+// Error handling for 404
 app.use((req, res, next) => {
-  res.status(404).send({
-    message: 'Route not found',
-  });
+    res.status(404).send({
+        message: 'Route not found',
+    });
 });
 
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send({
-    message: 'An internal server error occurred',
-  });
+    console.error(err.stack);
+    res.status(500).send({
+        message: 'An internal server error occurred',
+    });
 });
+
 
